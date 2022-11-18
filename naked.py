@@ -5,14 +5,21 @@ import time
 import yaml
 
 from datetime import datetime
+from configparser import ConfigParser
 print('Asteroid processing service')
 
 # Initiating and reading config values
 print('Loading configuration from file')
 
-# My API key and link where to make one
-nasa_api_key = "kFzPVBzJKS5MCLycUOEft4mjhqaAVRE1tORuyJJE"
-nasa_api_url = "https://api.nasa.gov/neo/"
+try:
+	config = ConfigParser()
+	config.read('config.ini')
+
+	nasa_api_key = config.get('nasa', 'api_key')
+	nasa_api_url = config.get('nasa', 'api_url')
+except:
+	logger.exception('')
+print('DONE')
 
 # Getting todays date
 dt = datetime.now()
@@ -43,10 +50,10 @@ if r.status_code == 200:
 		# Entire process prints out info about nearby asteroids, including name, link to info, diameter, if it's hazardous, how close it approaches Earth, time in UTC timezone, time in it's local timezone, speed, miss distance
 		if ast_count > 0:
  			for val in json_data['near_earth_objects'][request_date]:
-				if 'name' and 'nasa_jpl_url' and 'estimated_diameter' and 'is_potentially_hazardous_asteroid' and 'close_approach_data' in val:
+					if 'name' and 'nasa_jpl_url' and 'estimated_diameter' and 'is_potentially_hazardous_asteroid' and 'close_approach_data' in val:
 					# Sets temporary values for asteroid's name and url
-					tmp_ast_name = val['name']
-					tmp_ast_nasa_jpl_url = val['nasa_jpl_url']
+						tmp_ast_name = val['name']
+						tmp_ast_nasa_jpl_url = val['nasa_jpl_url']
 					# Sets temporary values for asteroid's estimated diameter - minimum and maximum values
 					if 'kilometers' in val['estimated_diameter']:
 						if 'estimated_diameter_min' and 'estimated_diameter_max' in val['estimated_diameter']['kilometers']:
