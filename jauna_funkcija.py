@@ -1,0 +1,1 @@
+#Izveido jaunu funkciju
